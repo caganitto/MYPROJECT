@@ -1,0 +1,43 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class Main {
+
+    public static final String[] MONTHS = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+    };
+
+    public static final String[] COMMODITIES = {
+            "Gold", "Oil", "Silver", "Wheat", "Copper"
+    };
+
+    // [month][day][commodity]
+    public static int[][][] data = new int[12][28][5];
+
+    // 0
+    public static void loadData() {
+        for (int i = 0; i < 12; i++) {
+            File f = new File("Data_Files/" + MONTHS[i] + ".txt");
+            try {
+                Scanner sc = new Scanner(f);
+                while (sc.hasNextLine()) {
+                    String line = sc.nextLine();
+                    String[] arr = line.split(",");
+
+                    int d = Integer.parseInt(arr[0]) - 1;
+                    String com = arr[1];
+                    int val = Integer.parseInt(arr[2]);
+
+                    int ci = getCommodityIndex(com);
+                    if (ci != -1 && d >= 0 && d < 28) {
+                        data[i][d][ci] = val;
+                    }
+                }
+                sc.close();
+            } catch (FileNotFoundException e) {
+                // ignore
+            }
+        }
+    }
