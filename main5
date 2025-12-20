@@ -17,30 +17,53 @@ public class Main {
     public static int[][][] data = new int[12][28][5];
 
     // 0
-    public static void loadData() {
-        for (int i = 0; i < 12; i++) {
-            File f = new File("Data_Files/" + MONTHS[i] + ".txt");
-            try {
-                Scanner sc = new Scanner(f);
-                while (sc.hasNextLine()) {
-                    String line = sc.nextLine();
-                    String[] arr = line.split(",");
+   public static void loadData() {
+    for (int m = 0; m < MONTHS.length; m++) {
+        try {
+            File file = new File("Data_Files/" + MONTHS[m] + ".txt");
+            Scanner sc = new Scanner(file);
 
-                    int d = Integer.parseInt(arr[0]) - 1;
-                    String com = arr[1];
-                    int val = Integer.parseInt(arr[2]);
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine().trim();
+                if (line.length() == 0) continue;
 
-                    int ci = getCommodityIndex(com);
-                    if (ci != -1 && d >= 0 && d < 28) {
-                        data[i][d][ci] = val;
+                String[] parts = line.split(",");
+                if (parts.length != 3) continue;
+
+                String dayStr = parts[0].trim();
+                String commodity = parts[1].trim();
+                String profitStr = parts[2].trim();
+
+                int day;
+                int profit;
+
+                try {
+                    day = Integer.parseInt(dayStr);
+                    profit = Integer.parseInt(profitStr);
+                } catch (Exception e) {
+                    continue;
+                }
+
+                if (day < 1 || day > 28) continue;
+
+                int commodityIndex = -1;
+                for (int c = 0; c < COMMODITIES.length; c++) {
+                    if (COMMODITIES[c].equals(commodity)) {
+                        commodityIndex = c;
+                        break;
                     }
                 }
-                sc.close();
-            } catch (FileNotFoundException e) {
-                // ignore
+
+                if (commodityIndex == -1) continue;
+
+                data[m][day - 1][commodityIndex] = profit;
             }
+
+            sc.close();
+        } catch (Exception e) {
         }
     }
+}
 
     // 1
     public static String mostProfitableCommodityInMonth(int month) {
