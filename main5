@@ -256,4 +256,11 @@ public class Main {
         }
         return -1;
     }
+
+
+    public static void main(String[] args) {
+        loadData();
+        System.out.println("Data loaded – ready for queries");
+    }
+
 }
